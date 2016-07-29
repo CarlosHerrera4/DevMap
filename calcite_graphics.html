@@ -93,7 +93,60 @@
 
   <!-- Panels -->
 
-  <div class="calcite-panels calcite-panels-right calcite-text-light calcite-bg-dark panel-group">
+  <div class="calcite-panels calcite-panels-right calcite-bg-custom calcite-text-light panel-group" role="tablist" aria-multiselectable="true" style="background-color: rgb(76, 76, 76);">
+    <div id="panelSettings" class="panel collapse in">
+
+      <div id="headingSettings" class="panel-heading">
+        <div class="panel-title">
+          <a class="panel-toggle" role="button" data-toggle="collapse" href="#collapseSettings" aria-expanded="true" aria-controls="collapseSettings"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span><span class="panel-label">Settings</span></a> 
+
+          <!-- <a class="panel-close" role="button" data-toggle="collapse" data-target="#panelSettings"><span class="esri-icon esri-icon-close" aria-hidden="true"></span></a> -->
+        </div>
+      </div>
+
+      <div id="collapseSettings" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingSettings">
+        <div class="panel-body">
+          <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#title" aria-controls="title" role="tab" data-toggle="tab">Name</a></li>
+            <li role="presentation"><a href="#map" aria-controls="map" role="tab" data-toggle="tab">Map</a></li>
+            <li role="presentation"><a href="#theme" aria-controls="theme" role="tab" data-toggle="tab">Theme</a></li>
+            <li role="presentation"><a href="#custom" aria-controls="custom" role="tab" data-toggle="tab">Layout</a></li>
+          </ul>
+
+          <div class="tab-content">
+            <!-- Tab -Title -->         
+            <div role="tabpanel" class="tab-pane active" id="title">  
+              <div class="calcite-form-title">1. Set the map name and call to action</div>  
+              <div class="form-horizontal calcite-form-padding">
+                <div class="form-group">
+                  <label for="settingsTitleInput" class="col-xs-3 control-label">Title</label>
+                  <div class="col-xs-9">
+                    <input type="text" class="form-control" id="settingsTitleInput" placeholder="{Map Name}">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="settingsSubTitleInput" class="col-xs-3 control-label">SubTitle</label>
+                  <div class="col-xs-9">
+                    <input type="text" class="form-control" id="settingsSubTitleInput" placeholder="{Subtitle - Call to action}">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-xs-9 col-xs-offset-3">
+                    <button id="titleButton" type="button" class="btn btn-primary btn-block">Apply</button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- <div class="calcite-panels calcite-panels-right calcite-text-light calcite-bg-dark panel-group"> -->
 
     <!-- Basemaps Panel -->
 
@@ -222,18 +275,27 @@
       "esri/Map",
       "esri/views/MapView",
       "esri/views/SceneView",
+      "esri/core/Scheduler",
       "esri/layers/FeatureLayer",
+      "esri/layers/TileLayer",
       "esri/layers/GraphicsLayer",
       "esri/Graphic",
       "esri/PopupTemplate",
       "esri/geometry/Point",
+      "esri/geometry/Polyline",
       "esri/symbols/SimpleMarkerSymbol",
+      "esri/symbols/PointSymbol3D",
+      "esri/symbols/IconSymbol3DLayer",
+      "esri/symbols/SimpleLineSymbol",
+      "esri/symbols/SimpleFillSymbol",
 
       "esri/widgets/Search",
       "esri/widgets/Popup",
       "esri/request",
       "esri/config",
       "esri/core/watchUtils",
+      "dojo/_base/connect",
+      "dojo/dom",
       "dojo/query",
       "dojo/on",
 
@@ -245,7 +307,7 @@
       // Calcite Maps
       "calcite-maps/calcitemaps-v0.2",
       "dojo/domReady!"
-    ], function(Map, MapView, SceneView, FeatureLayer, GraphicsLayer, Graphic, PopupTemplate, Point, SimpleMarkerSymbol, Search, Popup, esriRequest, esriConfig, watchUtils, query,
+    ], function(Map, MapView, SceneView, Scheduler, FeatureLayer, TileLayer, GraphicsLayer, Graphic, PopupTemplate, Point, Polyline, SimpleMarkerSymbol, PointSymbol3D, IconSymbol3DLayer, SimpleLineSymbol, SimpleFillSymbol, Search, Popup, esriRequest, esriConfig, watchUtils, connect, dom, query,
       on) {
 
 
@@ -332,57 +394,95 @@
       mapScene.add(layer3D);
       map.add(layer2D);
 
+      
+
       // Define popup
-      var template = new PopupTemplate({
-        title: "GEODEVELOPERSSSSS",
-        content: "<p>As of 2015, <b>{location}%</b> of the population in this zip code is married.</p>" +
-          "<ul><li>{location} people are married</li>" +
-          "<li>{location} have never married</li>" +
-          "<li>{location} are divorced</li><ul>" +
-          "<img src={photo}",
+      // var template = new PopupTemplate({
+      //   title: "GEODEVELOPERSSSSS",
+      //   content: "<p>As of 2015, <b>{location}%</b> of the population in this zip code is married.</p>" +
+      //     "<ul><li>{location} people are married</li>" +
+      //     "<li>{location} have never married</li>" +
+      //     "<li>{location} are divorced</li><ul>" +
+      //     "<img src={photo}",
 
         // fieldInfos: [{
         //   fieldName: "location",
         // }]
-      });
+      //});
 
-      esriRequest("https://cors.io/?u=" + "http://geodevelopers.org/api/users?f=json", {               
+      esriRequest("http://cors.io/?u=" + "http://geodevelopers.org/api/users?f=json", {               
         responseType: "json"
       }).then(function(response){
         geoJson = response;
-
         var veces = geoJson.data.length;
 
         for (i=0; i < veces ; i++) {
           createGraphic(i);
-        };
+        };  
+        // for (i=0; i< 11; i++) {
+        //   createGraphic(i);
+        // };
+      });
+
+      // function createGraphic(a) {
+      //   var point1 = new Point({
+      //     x: -0.178,
+      //     y: 51.48791,
+      //     z: 1010
+      //   });
         
-        });
-
-      // Add Feature Layer of Geodeveloper's members
-      // var fl = new FeatureLayer({
-      //     url: "http://services6.arcgis.com/ISJgswKTd7DKhcLN/arcgis/rest/services/geodevelopers/FeatureServer",
-      //     outFields: ["*"],
-      //     popupTemplate: template,
-      //     //renderer: renderer
+      //   var point2 = new Point({
+      //     x: -0.178,
+      //     y: 51.48791,
+      //     z: 0
       //   });
-      // var fl1 = new FeatureLayer({
-      //     url: "http://services6.arcgis.com/ISJgswKTd7DKhcLN/arcgis/rest/services/geodevelopers/FeatureServer",
-      //     outFields: ["*"],
-      //     popupTemplate: template,
-      //     //renderer: renderer
+        
+      //   var markerSymbol = new SimpleMarkerSymbol({
+      //     color: [226, 119, 40],
+      //     outline: {
+      //       color: [255, 255, 255],
+      //       width: 2
+      //     }
       //   });
-      // mapScene.add(fl);
-      // map.add(fl1);
 
-      //});
+      //   var point1Graphic = new Graphic({
+      //     geometry: point1,
+      //     symbol: markerSymbol
+      //   });
+      //   var point2Graphic = new Graphic({
+      //     geometry:point2,
+      //     symbol: markerSymbol
+      //   })
+
+      //   layer3D.add(point1Graphic);
+      //   layer3D.add(point2Graphic);
+
+      //   var polyline1 = new Polyline([
+      //     [-0.178, 51.48791, 0],
+      //     [-0.178, 51.48791, 1000]
+      //     ]);
+
+      //   var lineSymbol = new SimpleLineSymbol({
+      //       color: [226, 119, 40],
+      //       width: 4
+      //     });   
+
+      //   var polyline1Graphic = new Graphic({
+      //     geometry: polyline1,
+      //     symbol: lineSymbol
+      //   });
+
+      //   layer3D.add(polyline1Graphic);       
+      // };
+
 
       function createGraphic(a) {
         // Create Point
-        var point_graphic = new Point();
-        point_graphic.latitude = geoJson.data[a].lat;
-        point_graphic.longitude = geoJson.data[a].lon;
-
+        var point_graphic_1 = new Point();
+        point_graphic_1.latitude = geoJson.data[a].lat;
+        point_graphic_1.longitude = geoJson.data[a].lon;
+        point_graphic_1.z = 1000000;
+        // Create point's symbol
         var markerSymbol = new SimpleMarkerSymbol({
           color: [226, 119, 40],
           outline: {
@@ -390,22 +490,93 @@
             width: 2
           }
         });
+        var symbol = new PointSymbol3D({
+          symbolLayers: [new IconSymbol3DLayer({
+            size: 8,
+            resource: { href: "http://orig00.deviantart.net/8a2b/f/2012/099/4/1/pokeball_by_marsovski-d4vkkg2.png"}
+          })]
+        });
+        // Create Line
+        var p1 = parseFloat(geoJson.data[a].lon);
+        var p2 = parseFloat(geoJson.data[a].lat);
+        var polyline_graphic = new Polyline([
+          [p1, p2, 0],
+          [p1, p2, 1000000]
+          ]);
+        debugger
+        var lineSymbol = new SimpleLineSymbol({
+          color: [226, 119, 40],
+          width: 4
+        });
+        debugger
+        // var polylineGraphic1 = new Graphic({
+        //   geometry: polyline_graphic,
+        //   symbol: lineSymbol
+        // });
 
+        // Create popup
+        var template = new PopupTemplate();
+        template.title = geoJson.data[a].name;
+        template.content = "<p>As of 2015, <b>{location}%</b> of the population in this zip code is married.</p>" +
+          "<img src=" + geoJson.data[a].photo_url + ">";
+        // Create Graphic
         var graphic = new Graphic();
-        graphic.geometry = point_graphic;
+        graphic.geometry = point_graphic_1;
         graphic.popupTemplate = template;
         graphic.symbol = markerSymbol;
-        layer2D.add(graphic);
+
+        var graphicline = new Graphic();
+        graphicline.geometry = polyline_graphic;
+        graphicline.symbol = lineSymbol;
+        // var graphic2 = new Graphic();
+        // graphic2.geometry = polyline_graphic;
+        // graphic2.symbol = lineSymbol;
+        //graphic.symbol = symbol;
+        //layer2D.add(graphic);
         layer3D.add(graphic);
+        layer3D.add(graphicline);
+
       };
 
-      // var veces = geoJson.data.length;
+      // Click event  FUNCIONAAA
+      // app.mapView.on("dblclick", function(evt){
+      //   var ea = evt;
+      //   //console.log(evt.mapPoint);
+      //   app.mapView.goTo({
+      //     center: [evt.mapPoint.longitude, evt.mapPoint.latitude],
+      //     zoom: 6
+      //   });
+      // });
 
-      // for (i=0; i < veces ; i++) {
-      //   createGraphic(i);
-      // };
+      // TO DO!! Esto hace que rote la tierra  --> Tengo que mejorarlo
+      var rotateAroundTask = null;
+      var point_0 = new Point();
+      point_0.latitude = 45;
+      point_0.longitude = 0;
+      var x = 0;
+      var head = 0;
+      app.sceneView.on("click", function(evt){
+        var center = app.sceneView.center;
+        var scale = app.sceneView.scale;
+        rotateAroundTask = Scheduler.addFrameTask({
+          update: function() {
+            app.sceneView.goTo({
+              position: [app.sceneView.position.x + 0.2, 16.5306, 14050239],
+              heading: head + 0.2,
+              tilt: 45,
+              //target: [-122, 38, 50000],
+              //target: center,
+              //heading: 180,
+              //heading: app.sceneView.camera.heading + 0.2,
+              //position: app.sceneView.position + 0.2,
+              scale: scale
+            }, {
+              animate: false
+            });
+          }
+        });
+      });
 
-      
 
       // Set the active view to scene
       app.activeView = app.mapView;
