@@ -413,7 +413,7 @@
 
 
       //esriConfig.request.corsEnabledServers.push("geodevelopers.org");
-      esriConfig.request.corsEnabledServers.push("mundogister.github.io");
+      //esriConfig.request.corsEnabledServers.push("mundogister.github.io");
 
       esriConfig.request.proxyUrl = "PHP/proxy.php";
 
@@ -520,7 +520,7 @@
 
       features = [];
 
-      // esriRequest("http://cors.io/?u=" + "http://geodevelopers.org/api/users?f=json", {        
+      //esriRequest("http://cors.io/?u=" + "http://geodevelopers.org/api/users?f=json", {        
       esriRequest("http://geodevelopers.org/api/users?f=json", {            
         responseType: "json"
       }).then(function(response){
