@@ -21,6 +21,84 @@
       padding: 0;
       height: 100%;
     }
+
+
+     /* Set up some css rules to animate things */
+        /* The below two rules animate the creation of clusters */
+        .cluster-group {
+            transform-origin: center;
+            transform: scale(0, 0);
+        }
+        
+        .cluster-group.created  {
+            transform: scale(1, 1);
+            transition: transform linear 0.2s;
+        }
+        /* Some rules to change the appearance of clusters and it's text when activated */
+        /* Scale up the clusters when activated */
+        .cluster-group.activated {
+            transform: scale(1.3, 1.3);
+            transition: transform linear 0.4s;
+        }
+            
+         /* Change the appearance of clusters when activated */
+        .cluster-group.activated .cluster {
+            stroke: rgba(255,255,255,1);
+            stroke-width: 2;
+            transition: all ease 1s;
+        }
+           
+        .cluster-group.activated .cluster-text {
+            fill: #000;
+            font-weight: bold;
+            transition: all ease 1s;
+        }
+        /* hide flares by default */
+        .cluster-group .flare-group {
+            opacity: 0;
+        }
+       /* animate display of flares */
+        .cluster-group .flare-group.activated {
+            opacity: 1;
+            transition: opacity linear 0.06s;
+        }
+        /* this just chains the display of flares to occur one after the other using transition delay - could be a better way to do this natively but using SASS or LESS this would be much more concise */
+        .cluster-group .flare-group.activated:nth-of-type(1) {
+            transition-delay: 0.06s;
+        }
+        .cluster-group .flare-group.activated:nth-of-type(2) {
+            transition-delay: 0.12s;
+        }
+        .cluster-group .flare-group.activated:nth-of-type(3) {
+            transition-delay: 0.18s;
+        }
+        .cluster-group .flare-group.activated:nth-of-type(4) {
+            transition-delay: 0.24s;
+        }
+        .cluster-group .flare-group.activated:nth-of-type(5) {
+            transition-delay: 0.30s;
+        }
+        .cluster-group .flare-group.activated:nth-of-type(6) {
+            transition-delay: 0.36s;
+        }
+        .cluster-group .flare-group.activated:nth-of-type(7) {
+            transition-delay: 0.42s;
+        }
+        .cluster-group .flare-group.activated:nth-of-type(8) {
+            transition-delay: 0.48s;
+        }
+        .cluster-area {
+            transform-origin: center;
+            transform: scale(0, 0);
+        }
+        .cluster-area.activated {
+            transform: scale(1, 1);
+            transition: transform linear 0.4s;
+        
+}
+
+
+
   </style>
 
 </head>
@@ -31,7 +109,7 @@
 
   <nav class="navbar calcite-navbar navbar-fixed-top calcite-text-light calcite-bg-dark">
     <!-- Menu -->
-    <!-- <div class="dropdown calcite-dropdown calcite-text-dark calcite-bg-light" role="presentation">
+    <div class="dropdown calcite-dropdown calcite-text-dark calcite-bg-light" role="presentation">
       <a class="dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false">
         <div class="calcite-dropdown-toggle">
           <span class="sr-only">Toggle dropdown menu</span>
@@ -47,20 +125,30 @@
         <li><a class="hidden-md hidden-lg" href="#3dTab" aria-controls="3Dtab" role="tab"
             data-toggle="tab"> Scene</a></li>
         <li>
-          <a role="button" data-target="#panelBasemaps" aria-haspopup="true"><span class="glyphicon glyphicon-th-large"></span> Basemaps</a>
+          <!-- <a role="button" data-target="#panelBasemaps" aria-haspopup="true"><span class="glyphicon glyphicon-th-large"></span> Points</a> -->
+          <a role="button" data-target="#panelBasemaps" aria-haspopup="true"><span class="glyphicon glyphicon-user"></span> Points</a>
         </li>
         <li>
-          <a role="button" data-target="#panelSettings" aria-haspopup="true"><span class="glyphicon glyphicon-cog"></span> Settings</a>
+          <a role="button" data-target="#panelSettings" aria-haspopup="true"><span class="glyphicon glyphicon-plus-sign"></span> Cluster</a>
         </li>
-        <li><a role="button" id="calciteToggleNavbar" aria-haspopup="true"><span class="glyphicon glyphicon-fullscreen"></span> Full Map</a></li>
       </ul>
-    </div> -->
+    </div>
     <!-- Title -->
     <div class="calcite-title calcite-overflow-hidden">
       <span class="calcite-title-main">Geodevelopers</span>
       <span class="calcite-title-divider hidden-xs"></span>
       <!-- <span class="calcite-title-sub hidden-xs">A modern framework for building map apps</span> -->
     </div>
+    <!-- Point&Cluster -->
+    <ul class="nav navbar-nav">
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Visualización <span class="caret"></span></a>
+        <ul class="dropdown-menu">
+          <li><a href="#">Points</a></li>
+          <li><a href="#">Cluster</a></li>
+        </ul>
+      </li>
+    </ul>
     <!-- Nav -->
     <ul class="nav navbar-nav calcite-nav">
       <li class="active"><a id="mapNav" class="hidden-xs hidden-sm" href="#2dTab" aria-controls="2Dtab"
@@ -93,7 +181,61 @@
 
   <!-- Panels -->
 
-  <div class="calcite-panels calcite-panels-right calcite-text-light calcite-bg-dark panel-group">
+  <div class="calcite-panels calcite-panels-right calcite-bg-custom calcite-text-light panel-group" role="tablist" aria-multiselectable="true" style="background-color: rgb(76, 76, 76);">
+    <div id="panelSettings" class="panel collapse in">
+
+      <div id="headingSettings" class="panel-heading">
+        <div class="panel-title">
+          <a class="panel-toggle" role="button" data-toggle="collapse" href="#collapseSettings" aria-expanded="true" aria-controls="collapseSettings"><span class="glyphicon glyphicon-user" aria-hidden="true"></span><span class="panel-label">Settings</span></a> 
+
+          <!-- <a class="panel-close" role="button" data-toggle="collapse" data-target="#panelSettings"><span class="esri-icon esri-icon-close" aria-hidden="true"></span></a> -->
+        </div>
+      </div>
+
+      <div id="collapseSettings" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingSettings">
+        <div class="panel-body">
+          <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#title" aria-controls="title" role="tab" data-toggle="tab">Name</a></li>
+            <li role="presentation"><a href="#map" aria-controls="map" role="tab" data-toggle="tab">Map</a></li>
+            <li role="presentation"><a href="#theme" aria-controls="theme" role="tab" data-toggle="tab">Theme</a></li>
+            <li role="presentation"><a href="#custom" aria-controls="custom" role="tab" data-toggle="tab">Layout</a></li>
+          </ul>
+
+          <div class="tab-content">
+            <!-- Tab -Title -->         
+            <div role="tabpanel" class="tab-pane active" id="title">  
+              <div class="calcite-form-title">1. Set the map name and call to action</div>  
+              <div class="form-horizontal calcite-form-padding">
+                <div class="form-group">
+                  <label for="settingsTitleInput" class="col-xs-3 control-label">Title</label>
+                  <div class="col-xs-9">
+                    <input type="text" class="form-control" id="settingsTitleInput" placeholder="{Map Name}">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="settingsSubTitleInput" class="col-xs-3 control-label">SubTitle</label>
+                  <div class="col-xs-9">
+                    <input type="text" class="form-control" id="settingsSubTitleInput" placeholder="{Subtitle - Call to action}">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-xs-9 col-xs-offset-3">
+                    <button id="titleButton" type="button" class="btn btn-primary btn-block">Apply</button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+    <!-- <br><br><br><br><br><br><br> -->
+  </div>
+
+  <!-- <div class="calcite-panels calcite-panels-right calcite-text-light calcite-bg-dark panel-group"> -->
 
     <!-- Basemaps Panel -->
 
@@ -208,12 +350,18 @@
       {
         name: "calcite-maps",
         location: "https://esri.github.io/calcite-maps/dist/js/dojo"
+      },
+      {
+        name: "fcl",
+        location: location.pathname.replace(/\/[^/]+$/, '') + "/fcl"
       }]
     };
   </script>
 
   <!-- ArcGIS JS 4.0 -->
   <script src="https://js.arcgis.com/4.0/"></script>
+  <!-- ArcGIS JS 3.17 -->
+  <!-- <script src="https://js.arcgis.com/3.17/"></script>  -->
 
   <script>
     var app;
@@ -222,18 +370,33 @@
       "esri/Map",
       "esri/views/MapView",
       "esri/views/SceneView",
+      "esri/Color",
+      "esri/core/Scheduler",
       "esri/layers/FeatureLayer",
+      "esri/layers/TileLayer",
       "esri/layers/GraphicsLayer",
       "esri/Graphic",
       "esri/PopupTemplate",
       "esri/geometry/Point",
+      "esri/geometry/Polyline",
       "esri/symbols/SimpleMarkerSymbol",
+      "esri/symbols/PointSymbol3D",
+      "esri/symbols/IconSymbol3DLayer",
+      "esri/symbols/SimpleLineSymbol",
+      "esri/symbols/SimpleFillSymbol",
+       "esri/symbols/TextSymbol",
+       "esri/symbols/TextSymbol3DLayer",
+       "esri/symbols/Font",
 
+       "esri/renderers/ClassBreaksRenderer",
       "esri/widgets/Search",
       "esri/widgets/Popup",
       "esri/request",
       "esri/config",
       "esri/core/watchUtils",
+      "esri/core/urlUtils",
+      "dojo/_base/connect",
+      "dojo/dom",
       "dojo/query",
       "dojo/on",
 
@@ -245,12 +408,17 @@
       // Calcite Maps
       "calcite-maps/calcitemaps-v0.2",
       "dojo/domReady!"
-    ], function(Map, MapView, SceneView, FeatureLayer, GraphicsLayer, Graphic, PopupTemplate, Point, SimpleMarkerSymbol, Search, Popup, esriRequest, esriConfig, watchUtils, query,
+    ], function(Map, MapView, SceneView, Color, Scheduler, FeatureLayer, TileLayer, GraphicsLayer, Graphic, PopupTemplate, Point, Polyline, SimpleMarkerSymbol, PointSymbol3D, IconSymbol3DLayer, SimpleLineSymbol, SimpleFillSymbol, TextSymbol, TextSymbol3DLayer, Font, ClassBreaksRenderer, Search, Popup, esriRequest, esriConfig, watchUtils, urlUtils, connect, dom, query,
       on) {
 
 
       esriConfig.request.corsEnabledServers.push("geodevelopers.org");
       esriConfig.request.corsEnabledServers.push("cors.io");
+
+      urlUtils.addProxyRule({
+        urlPrefix: "geodevelopers.org",
+        proxyUrl: "PHP/proxy.php"
+      });
 
       /******************************************************************
        *
@@ -330,59 +498,52 @@
       var layer2D = new GraphicsLayer();
       var layer3D = new GraphicsLayer();
       mapScene.add(layer3D);
-      map.add(layer2D);
+      //map.add(layer2D);
+
+      
 
       // Define popup
-      var template = new PopupTemplate({
-        title: "GEODEVELOPERSSSSS",
-        content: "<p>As of 2015, <b>{location}%</b> of the population in this zip code is married.</p>" +
-          "<ul><li>{location} people are married</li>" +
-          "<li>{location} have never married</li>" +
-          "<li>{location} are divorced</li><ul>" +
-          "<img src={photo}",
+      // var template = new PopupTemplate({
+      //   title: "GEODEVELOPERSSSSS",
+      //   content: "<p>As of 2015, <b>{location}%</b> of the population in this zip code is married.</p>" +
+      //     "<ul><li>{location} people are married</li>" +
+      //     "<li>{location} have never married</li>" +
+      //     "<li>{location} are divorced</li><ul>" +
+      //     "<img src={photo}",
 
         // fieldInfos: [{
         //   fieldName: "location",
         // }]
-      });
+      //});
 
-      esriRequest("https://cors.io/?u=" + "http://geodevelopers.org/api/users?f=json", {               
+      features = [];
+
+      // esriRequest("http://cors.io/?u=" + "http://geodevelopers.org/api/users?f=json", {        
+      esriRequest("http://geodevelopers.org/api/users?f=json", {            
         responseType: "json"
       }).then(function(response){
         geoJson = response;
-
         var veces = geoJson.data.length;
 
         for (i=0; i < veces ; i++) {
           createGraphic(i);
-        };
-        
-        });
+          createArrayGraphics(i);
+        };  
+        // for (i=0; i< 11; i++) {
+        //   createGraphic(i);
+        // };
+        createFeatureLayer(features);
+      });
 
-      // Add Feature Layer of Geodeveloper's members
-      // var fl = new FeatureLayer({
-      //     url: "http://services6.arcgis.com/ISJgswKTd7DKhcLN/arcgis/rest/services/geodevelopers/FeatureServer",
-      //     outFields: ["*"],
-      //     popupTemplate: template,
-      //     //renderer: renderer
-      //   });
-      // var fl1 = new FeatureLayer({
-      //     url: "http://services6.arcgis.com/ISJgswKTd7DKhcLN/arcgis/rest/services/geodevelopers/FeatureServer",
-      //     outFields: ["*"],
-      //     popupTemplate: template,
-      //     //renderer: renderer
-      //   });
-      // mapScene.add(fl);
-      // map.add(fl1);
-
-      //});
-
+      
       function createGraphic(a) {
+        //3D
         // Create Point
-        var point_graphic = new Point();
-        point_graphic.latitude = geoJson.data[a].lat;
-        point_graphic.longitude = geoJson.data[a].lon;
-
+        var point_graphic_1 = new Point();
+        point_graphic_1.latitude = geoJson.data[a].lat;
+        point_graphic_1.longitude = geoJson.data[a].lon;
+        point_graphic_1.z = 1000000;
+        // Create point's symbol
         var markerSymbol = new SimpleMarkerSymbol({
           color: [226, 119, 40],
           outline: {
@@ -390,22 +551,220 @@
             width: 2
           }
         });
-
+        var symbol = new PointSymbol3D({
+          symbolLayers: [new IconSymbol3DLayer({
+            size: 8,
+            resource: { href: "http://orig00.deviantart.net/8a2b/f/2012/099/4/1/pokeball_by_marsovski-d4vkkg2.png"}
+          })]
+        });
+        // Create Line
+        var p1 = parseFloat(geoJson.data[a].lon);
+        var p2 = parseFloat(geoJson.data[a].lat);
+        var polyline_graphic = new Polyline([
+          [p1, p2, 0],
+          [p1, p2, 1000000]
+          ]);
+        var lineSymbol = new SimpleLineSymbol({
+          color: [226, 119, 40],
+          width: 4
+        });
+        // Create popup
+        var template = new PopupTemplate();
+        template.title = geoJson.data[a].name;
+        template.content = "<p>As of 2015, <b>{location}%</b> of the population in this zip code is married.</p>" +
+          "<img src=" + geoJson.data[a].photo_url + ">";
+        // Create Graphic
         var graphic = new Graphic();
-        graphic.geometry = point_graphic;
+        graphic.geometry = point_graphic_1;
         graphic.popupTemplate = template;
         graphic.symbol = markerSymbol;
-        layer2D.add(graphic);
+
+        var graphicline = new Graphic();
+        graphicline.geometry = polyline_graphic;
+        graphicline.symbol = lineSymbol;
+        // Add graphics to graphic layer
+        //layer2D.add(graphic);
         layer3D.add(graphic);
+        layer3D.add(graphicline);
+
+
+
+        
+
+
       };
 
-      // var veces = geoJson.data.length;
+      //CREATE A COLLECTION OF GRAPHICS OBJECTS TO CREATE A FEATURE LAYER
+      function createArrayGraphics(b) {
+        //Create point
+        var point_array = new Point();
+        point_array.latitude = geoJson.data[b].lat;
+        point_array.longitude = geoJson.data[b].lon;
+        // Create point's symbol
+        var markerSymbol = new SimpleMarkerSymbol({
+          color: [226, 119, 40],
+          outline: {
+            color: [255, 255, 255],
+            width: 2
+          }
+        });
+        // Create popup
+        var template = new PopupTemplate();
+        template.title = geoJson.data[b].name;
+        template.content = "<p>As of 2015, <b>{location}%</b> of the population in this zip code is married.</p>" +
+          "<img src=" + geoJson.data[b].photo_url + ">";
+        //Create graphic
+        var graphic = new Graphic();
+        graphic.geometry = point_array;
+        graphic.popupTemplate = template;
+        graphic.symbol = markerSymbol;
 
-      // for (i=0; i < veces ; i++) {
-      //   createGraphic(i);
-      // };
+        graphic.ObjectID = b;
+        graphic.name = geoJson.data[b].name;
+        graphic.twitter_url = geoJson.data[b].twitter_url;
+        graphic.meetup_id = geoJson.data[b].meetup_id;
+        graphic.photo_url = geoJson.data[b].photo_url;
+        graphic.location = geoJson.data[b].location;
+        graphic.facebook_url = geoJson.data[b].facebook_url;
+        graphic.flickr_url = geoJson.data[b].flickr_url;
+        graphic.github_url = geoJson.data[b].github_url;
+        graphic.linkedin_url = geoJson.data[b].linkedin_url;
 
-      
+        features.push(graphic);
+
+
+        if (features.length == geoJson.data) {
+          array_collection_complete = "true"
+        } 
+        else {
+          array_collection_complete = "false"
+        }
+      };
+
+      function createFeatureLayer(c) {
+        var lyr = new FeatureLayer({
+          fields: [{
+            name: "ObjectID",
+            alias: "ObjectID",
+            type: "old"
+          },{
+            name: "name",
+            alias: "Name",
+            type: "string"
+          }, {
+            name: "twitter_url",
+            alias: "twitter_url",
+            type: "string"
+          }, {
+            name: "meetup_id",
+            alias: "meetup_id",
+            type: "number"
+          }, {
+            name: "photo_url",
+            alias: "photo_url",
+            type: "string"
+          }, {
+            name: "location",
+            alias: "location",
+            type: "string"
+          }, {
+            name: "lat",
+            alias: "lat",
+            type: "number"
+          }, {
+            name: "lon",
+            alias: "lon",
+            type: "number"
+          }, {
+            name: "facebook_url",
+            alias: "facebook_url",
+            type: "string"
+          }, {
+            name: "flickr_url",
+            alias: "flickr_url",
+            type: "string"
+          }, {
+            name: "github_url",
+            alias: "github_url",
+            type: "string"
+          }, {
+            name: "linkedin_url",
+            alias: "linkedin_url",
+            type: "string"
+          }],
+          objectIdField: "ObjectID",
+          geometryType: "point",
+          spatialReference: {wkid:4326},
+          source: c
+        });
+        map.add(lyr);
+      };
+
+      // Click event  FUNCIONAAA
+      // app.mapView.on("dblclick", function(evt){
+      //   var ea = evt;
+      //   //console.log(evt.mapPoint);
+      //   app.mapView.goTo({
+      //     center: [evt.mapPoint.longitude, evt.mapPoint.latitude],
+      //     zoom: 6
+      //   });
+      // });
+
+      // TO DO!! HAY QUE QUITARLE CÓDIGO SOBRANTE A ESTOOO!!  Esto hace que rote la tierra  --> Tengo que mejorarlo
+      var rotateAroundTask = null;
+      var point_0 = new Point();
+      point_0.latitude = 45;
+      point_0.longitude = 0;
+      var x = 0;
+      var head = 0;
+      var pt = new Array();
+      pt.push(50);
+      pt.push(48);
+      pt.push(200000000);
+
+      function cancelRotateAround() {
+        if (rotateAroundTask) {
+          rotateAroundTask.remove();
+          rotateAroundTask = null;
+          return true;
+        }
+        return false;
+      }
+
+      app.sceneView.on("click", function(evt){
+        if (cancelRotateAround()) {
+          return;
+        }
+        var center = app.sceneView.center;
+        var scale = app.sceneView.scale;
+        rotateAroundTask = Scheduler.addFrameTask({
+          update: function() {
+              center.longitude = center.longitude + 0.2;
+              //pt[0] = pt[0] + 0.2;
+              //pt[1] = pt[1] + 0.2;
+              app.sceneView.goTo({
+              target: center,
+
+              //target: [1000, 1, 20000],
+              heading: app.sceneView.camera.heading + 0.1,
+              //position: center,
+              //zoom:1,
+              //position: [app.sceneView.position.center + 0.2, 16.5306, 14050239],
+              //heading: app.sceneView.camera + 0.2,
+              //tilt: 45,
+              //target: [-122, 38, 50000],
+              //target: center,
+              //heading: 180,
+              //heading: app.sceneView.camera.heading + 0.2,
+              //position: app.sceneView.position + 0.2,
+              scale: scale
+            }, {
+              animate: false
+            });
+          }
+        });
+      });
+
 
       // Set the active view to scene
       app.activeView = app.mapView;
