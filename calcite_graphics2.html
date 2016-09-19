@@ -415,10 +415,12 @@
       //esriConfig.request.corsEnabledServers.push("geodevelopers.org");
       esriConfig.request.corsEnabledServers.push("mundogister.github.io");
 
-      urlUtils.addProxyRule({
-        urlPrefix: "geodevelopers.org",
-        proxyUrl: "PHP/proxy.php"
-      });
+      esriConfig.request.proxyUrl = "PHP/proxy.php";
+
+      // urlUtils.addProxyRule({
+      //   urlPrefix: "geodevelopers.org",
+      //   proxyUrl: "PHP/proxy.php"
+      // });
 
       /******************************************************************
        *
