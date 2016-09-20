@@ -21,85 +21,13 @@
       padding: 0;
       height: 100%;
     }
-
-
-     /* Set up some css rules to animate things */
-        /* The below two rules animate the creation of clusters */
-        .cluster-group {
-            transform-origin: center;
-            transform: scale(0, 0);
-        }
         
-        .cluster-group.created  {
-            transform: scale(1, 1);
-            transition: transform linear 0.2s;
-        }
-        /* Some rules to change the appearance of clusters and it's text when activated */
-        /* Scale up the clusters when activated */
-        .cluster-group.activated {
-            transform: scale(1.3, 1.3);
-            transition: transform linear 0.4s;
-        }
-            
-         /* Change the appearance of clusters when activated */
-        .cluster-group.activated .cluster {
-            stroke: rgba(255,255,255,1);
-            stroke-width: 2;
-            transition: all ease 1s;
-        }
-           
-        .cluster-group.activated .cluster-text {
-            fill: #000;
-            font-weight: bold;
-            transition: all ease 1s;
-        }
-        /* hide flares by default */
-        .cluster-group .flare-group {
-            opacity: 0;
-        }
-       /* animate display of flares */
-        .cluster-group .flare-group.activated {
-            opacity: 1;
-            transition: opacity linear 0.06s;
-        }
-        /* this just chains the display of flares to occur one after the other using transition delay - could be a better way to do this natively but using SASS or LESS this would be much more concise */
-        .cluster-group .flare-group.activated:nth-of-type(1) {
-            transition-delay: 0.06s;
-        }
-        .cluster-group .flare-group.activated:nth-of-type(2) {
-            transition-delay: 0.12s;
-        }
-        .cluster-group .flare-group.activated:nth-of-type(3) {
-            transition-delay: 0.18s;
-        }
-        .cluster-group .flare-group.activated:nth-of-type(4) {
-            transition-delay: 0.24s;
-        }
-        .cluster-group .flare-group.activated:nth-of-type(5) {
-            transition-delay: 0.30s;
-        }
-        .cluster-group .flare-group.activated:nth-of-type(6) {
-            transition-delay: 0.36s;
-        }
-        .cluster-group .flare-group.activated:nth-of-type(7) {
-            transition-delay: 0.42s;
-        }
-        .cluster-group .flare-group.activated:nth-of-type(8) {
-            transition-delay: 0.48s;
-        }
-        .cluster-area {
-            transform-origin: center;
-            transform: scale(0, 0);
-        }
-        .cluster-area.activated {
-            transform: scale(1, 1);
-            transition: transform linear 0.4s;
-        
-}
+
 
 
 
   </style>
+
 
 </head>
 
@@ -182,17 +110,18 @@
   <!-- Panels -->
 
   <div class="calcite-panels calcite-panels-right calcite-bg-custom calcite-text-light panel-group" role="tablist" aria-multiselectable="true" style="background-color: rgb(76, 76, 76);">
-    <div id="panelSettings" class="panel collapse in">
+
+   <div id="panelSettings" class="panel collapse in">
 
       <div id="headingSettings" class="panel-heading">
         <div class="panel-title">
           <a class="panel-toggle" role="button" data-toggle="collapse" href="#collapseSettings" aria-expanded="true" aria-controls="collapseSettings"><span class="glyphicon glyphicon-user" aria-hidden="true"></span><span class="panel-label">Settings</span></a> 
 
-          <!-- <a class="panel-close" role="button" data-toggle="collapse" data-target="#panelSettings"><span class="esri-icon esri-icon-close" aria-hidden="true"></span></a> -->
-        </div>
+          <a class="panel-close" role="button" data-toggle="collapse" data-target="#panelSettings"><span class="esri-icon esri-icon-close" aria-hidden="true"></span></a>
+         </div>
       </div>
 
-      <div id="collapseSettings" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingSettings">
+      <div id="collapseSettings" class="panel-collapse collapse " role="tabpanel" aria-labelledby="headingSettings"> <!-- La clase que tenía contenía un "in" que hacía que el panel estuviera abierto -->
         <div class="panel-body">
           <ul class="nav nav-tabs" role="tablist">
             <li role="presentation" class="active"><a href="#title" aria-controls="title" role="tab" data-toggle="tab">Name</a></li>
@@ -205,33 +134,30 @@
             <!-- Tab -Title -->         
             <div role="tabpanel" class="tab-pane active" id="title">  
               <div class="calcite-form-title">1. Set the map name and call to action</div>  
-              <div class="form-horizontal calcite-form-padding">
-                <div class="form-group">
-                  <label for="settingsTitleInput" class="col-xs-3 control-label">Title</label>
-                  <div class="col-xs-9">
-                    <input type="text" class="form-control" id="settingsTitleInput" placeholder="{Map Name}">
+                <div class="form-horizontal calcite-form-padding">
+                  <div class="form-group">
+                    <label for="settingsTitleInput" class="col-xs-3 control-label">Title</label>
+                    <div class="col-xs-9">
+                      <input type="text" class="form-control" id="settingsTitleInput" placeholder="{Map Name}">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="settingsSubTitleInput" class="col-xs-3 control-label">SubTitle</label>
+                    <div class="col-xs-9">
+                      <input type="text" class="form-control" id="settingsSubTitleInput" placeholder="{Subtitle - Call to action}">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-xs-9 col-xs-offset-3">
+                      <button id="titleButton" type="button" class="btn btn-primary btn-block">Apply</button>
+                    </div>
                   </div>
                 </div>
-                <div class="form-group">
-                  <label for="settingsSubTitleInput" class="col-xs-3 control-label">SubTitle</label>
-                  <div class="col-xs-9">
-                    <input type="text" class="form-control" id="settingsSubTitleInput" placeholder="{Subtitle - Call to action}">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <div class="col-xs-9 col-xs-offset-3">
-                    <button id="titleButton" type="button" class="btn btn-primary btn-block">Apply</button>
-                  </div>
-                </div>
-
-              </div>
             </div>
           </div>
-
         </div>
       </div>
-
-    </div>
+    </div> 
     <!-- <br><br><br><br><br><br><br> -->
   </div>
 
@@ -350,10 +276,6 @@
       {
         name: "calcite-maps",
         location: "https://esri.github.io/calcite-maps/dist/js/dojo"
-      },
-      {
-        name: "fcl",
-        location: location.pathname.replace(/\/[^/]+$/, '') + "/fcl"
       }]
     };
   </script>
@@ -648,6 +570,8 @@
       };
 
       function createFeatureLayer(c) {
+
+        
         var lyr = new FeatureLayer({
           fields: [{
             name: "ObjectID",
@@ -769,6 +693,7 @@
             });
           }
         });
+        document.getElementById("collapseSettings").className = " in";
       });
 
 
