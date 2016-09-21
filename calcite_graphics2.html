@@ -10,6 +10,7 @@
 
   <!-- Calcite Maps -->
   <link rel="stylesheet" href="https://esri.github.io/calcite-maps/dist/css/calcite-maps-arcgis-4.x.min-v0.2.css">
+  
 
   <!-- ArcGIS JS 4.0 -->
   <link rel="stylesheet" href="https://js.arcgis.com/4.0/esri/css/main.css">
@@ -116,8 +117,8 @@
       <div id="headingSettings" class="panel-heading">
         <div class="panel-title">
           <a class="panel-toggle" role="button" data-toggle="collapse" href="#collapseSettings" aria-expanded="true" aria-controls="collapseSettings"><span class="glyphicon glyphicon-user" aria-hidden="true"></span><span class="panel-label">Settings</span></a> 
-
-          <a class="panel-close" role="button" data-toggle="collapse" data-target="#panelSettings"><span class="esri-icon esri-icon-close" aria-hidden="true"></span></a>
+          <!-- Button Close panel -->
+          <!-- <a class="panel-close" role="button" data-toggle="collapse" data-target="#panelSettings"><span class="esri-icon esri-icon-close" aria-hidden="true"></span></a> -->
          </div>
       </div>
 
@@ -515,11 +516,6 @@
         layer3D.add(graphic);
         layer3D.add(graphicline);
 
-
-
-        
-
-
       };
 
       //CREATE A COLLECTION OF GRAPHICS OBJECTS TO CREATE A FEATURE LAYER
@@ -569,10 +565,12 @@
         }
       };
 
+      lyr = {};
+
       function createFeatureLayer(c) {
 
         
-        var lyr = new FeatureLayer({
+        lyr = new FeatureLayer({
           fields: [{
             name: "ObjectID",
             alias: "ObjectID",
@@ -628,17 +626,20 @@
           source: c
         });
         map.add(lyr);
+
+        // lyr.on("click", function(evt){
+        //   document.getElementById("collapseSettings").className = " in";
+        // });
       };
 
-      // Click event  FUNCIONAAA
-      // app.mapView.on("dblclick", function(evt){
-      //   var ea = evt;
-      //   //console.log(evt.mapPoint);
-      //   app.mapView.goTo({
-      //     center: [evt.mapPoint.longitude, evt.mapPoint.latitude],
-      //     zoom: 6
-      //   });
+      lyr.on("click", function(evt){
+        document.getElementById("collapseSettings").className = " in";
+      });
+
+      // this.lyr.on("click", function(evt){
+      //   document.getElementById("collapseSettings").className = " in";
       // });
+
 
       // TO DO!! HAY QUE QUITARLE CÓDIGO SOBRANTE A ESTOOO!!  Esto hace que rote la tierra  --> Tengo que mejorarlo
       var rotateAroundTask = null;
